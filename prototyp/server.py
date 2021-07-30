@@ -2,8 +2,8 @@ import os, toml, sys, socket, argparse, threading, time
 
 # TODO: Kanske borde flyttas till config file, men känns onödigt
 # i nuläget
-HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
+HOST = ''  # Standard loopback interface address (localhost)
+PORT = 20001        # Port to listen on (non-privileged ports are > 1023)
 
 # Global variable
 speaker_list = []
@@ -35,6 +35,8 @@ def speakerFromFile(path):
 def addSpeakerToList(tag, remote=False):
     if tag in speakers:
         with speaker_lock:
+            if tag in speaker_list:
+                return False
             speaker_list.append(tag)
             speaker_list.sort(key=lambda x: speakers[x][1])
             return True

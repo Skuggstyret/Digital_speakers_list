@@ -123,7 +123,7 @@ def main(argv):
 :n Visar nästa talare, aka ta bort nuvarande.\n
 :r Rensar alla talares streck\n
 :q Stänger in programet.\n
-:h Visar nu varande info.\n\n
+:h Visar nuvarande info.\n\n
 Programmet kan även kör med en toml file som argument,\n
 vilket tillåter använder allt ladda talare. Filen ska \n
 vara formaterade enligt:

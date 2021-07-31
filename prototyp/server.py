@@ -1,4 +1,4 @@
-import os, toml, sys, socket, argparse, threading, time
+import os, toml, sys, socket, argparse, threading, time, datetime
 
 # TODO: Kanske borde flyttas till config file, men känns onödigt
 # i nuläget
@@ -32,7 +32,7 @@ def speakerFromFile(path):
     file_data = toml.load(path)
     with speaker_lock:
         for speaker in file_data["talar"]:
-            speakers[speaker[0]] = [speaker[1],0]
+            speakers[speaker[0]] = [speaker[1],0,0]
 
 
 def addSpeakerToList(tag, remote=False):
@@ -54,6 +54,7 @@ def nextSpeaker():
         global speaker_list
         speaker = speakers[speaker_list[0]]
         speaker[1] += 1
+        speaker[2] += 1
         speaker_list = speaker_list[1:]
 
 def resetCount():
@@ -103,6 +104,17 @@ def render():
         for speaker in speaker_list:
             print(speakers[speaker][0])
 
+
+def export(name):
+    if name == "":
+        date = datetime.date.today()
+        name = date.strftime("%Y-%m-%d")
+
+    with open(name, "x") as f:
+        for speaker in speakers:
+            f.write("{} - {}\n".format(speakers[speaker][0], speakers[speaker][2]))
+
+
 def main(argv):
     udp_lister =  threading.Thread(target=udpListner, daemon=True)
     udp_lister.start()
@@ -120,6 +132,12 @@ def main(argv):
             nextSpeaker()
         elif command == ":r":
             resetCount()
+        elif command.split()[0] == ":e":
+            if len(command.split()) > 1:
+                export(command.split()[1])
+            else:
+                export("")
+            input("Exported")
         elif command == ":h":
             print("Hjälp Sidan")
             print("-----------")

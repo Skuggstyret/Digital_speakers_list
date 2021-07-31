@@ -3,6 +3,9 @@ import os, toml, sys, socket, argparse, threading, time
 # TODO: Kanske borde flyttas till config file, men känns onödigt
 # i nuläget
 HOST = ''  # Standard loopback interface address (localhost)
+with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+    s.connect(("8.8.8.8", 80))
+    HOST = s.getsockname()[0]
 PORT = 20001        # Port to listen on (non-privileged ports are > 1023)
 
 # Global variable
@@ -93,7 +96,8 @@ def udpListner():
 def render():
     with terminal_lock:
         clear()
-        print("Skuggstyret talarlista")
+        print("{}:{}\nSkuggstyret talarlista".format(HOST
+, PORT))
         print("----------------------")
 
         for speaker in speaker_list:

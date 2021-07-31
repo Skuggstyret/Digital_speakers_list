@@ -17,6 +17,7 @@ speaker_lock = threading.Semaphore()
 
 clear = lambda: os.system('clear')
 
+# TODO: Byt till två talarlistor
 def addSpeaker():
     with terminal_lock:
         while True:
@@ -35,7 +36,7 @@ def speakerFromFile(path):
             speakers[speaker[0]] = [speaker[1],0,0]
 
 
-def addSpeakerToList(tag, remote=False):
+def addSpeakerToList(tag, remote = False):
     if tag in speakers:
         with speaker_lock:
             if tag in speaker_list:
@@ -48,6 +49,21 @@ def addSpeakerToList(tag, remote=False):
             with terminal_lock:
                 print("Ingen sådan talare")
         return False
+
+def removeSpeakerFromList(tag, remote = False):
+    tag = tag[1:]
+    if tag in speakers:
+        with speaker_lock:
+            if tag not in speaker_list:
+                return False
+            speaker_list.remove(tag)
+            return True
+    else:
+        if not remote:
+            with terminal_lock:
+                print("Ingen sådan talare")
+        return False
+
 
 def nextSpeaker():
     with speaker_lock:
@@ -88,9 +104,14 @@ def udpListner():
         message = bytesAddressPair[0]
         address = bytesAddressPair[1]
 
-        tag = chr(message[0])
+        tag = bytes.decode(message)
 
-        if (addSpeakerToList(tag,True)):
+        fnc = None
+        if tag[0] == "-":
+            fnc = removeSpeakerFromList
+        else:
+            fnc = addSpeakerToList
+        if (fnc(tag,True)):
             render()
 
 
@@ -158,7 +179,10 @@ talare = [
             input("Press any button to continue")
 
         else:
-            addSpeakerToList(command)
+            if command[0] == "-":
+                removeSpeakerFromList(command)
+            else:
+                addSpeakerToList(command)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

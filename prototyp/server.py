@@ -21,48 +21,49 @@ def getSpeakers():
 ## adds user to this session, is not presistent
 @app.route("/speaker/add/<name>", methods=['POST'])
 def addSpeaker(name):
-    speakers[name[0]] = [name,0,0]
+    speakers[name] = [0,0]
 
 
 
 # list
-@app.route("/list/add/<tag>", methods=['POST'])
-def addSpeakerToList(tag):
-    if tag in speakers:
+@app.route("/list/add/<name>", methods=['POST'])
+def addSpeakerToList(name):
+    if name in speakers:
         with speaker_lock:
-            if tag in speaker_list:
+            if name in speaker_list:
                 return '', status.HTTP_400_BAD_REQUEST
-            speaker_list.append(tag)
+            speaker_list.append(name)
             speaker_list.sort(key=lambda x: speakers[x][1])
             return '',status.HTTP_202_ACCEPTED
     else:
         return '', status.HTTP_400_BAD_REQUEST
 
-@app.route("/list/remove/<tag>",methods=['POST'])
-def removeSpeakerFromList(tag):
-    if tag in speakers:
+@app.route("/list/remove/<name>",methods=['POST'])
+def removeSpeakerFromList(name):
+    if name in speakers:
         with speaker_lock:
-            if tag not in speaker_list:
+            if name not in speaker_list:
                 return '', status.HTTP_400_BAD_REQUEST
-            speaker_list.remove(tag)
+            speaker_list.remove(name)
             return '', status.HTTP_200_OK
     else:
         return '', status.HTTP_400_BAD_REQUEST
 
 @app.route("/list/get",methods=['GET'])
 def getSpeakersOnList():
-    return jsonify(list(map(lambda x:speakers[x], speaker_list))), status.HTTP_200_OK
+    return jsonify(speaker_list), status.HTTP_200_OK
 
 
 @app.route("/list/next",methods=['POST'])
 def nextSpeaker():
     with speaker_lock:
         global speaker_list
-        speaker = speakers[speaker_list[0]]
+        next_speaker = speaker_list[0]
+        speaker = speakers[next_speaker]
+        speaker[0] += 1
         speaker[1] += 1
-        speaker[2] += 1
         speaker_list = speaker_list[1:]
-        return speaker[0], status.HTTP_202_ACCEPTED
+        return next_speaker, status.HTTP_202_ACCEPTED
 
 @app.route("/list/reset", methods=['POST'])
 def resetCount():
@@ -81,7 +82,7 @@ def export(name = ""):
 
     with open(name, "x") as f:
         for speaker in speakers:
-            f.write("{} - {}\n".format(speakers[speaker][0], speakers[speaker][2]))
+            f.write("{} - {}\n".format(speaker, speakers[speaker][2]))
 
 
 
@@ -92,5 +93,5 @@ if __name__ == "__main__":
         file_data = toml.load(sys.argv[1])
         with speaker_lock:
             for speaker in file_data["talar"]:
-                speakers[speaker[0]] = [speaker[1],0,0]
+                speakers[speaker] = [0,0]
     app.run(debug=True, use_reloader=False)

@@ -1,11 +1,11 @@
 talar = [
-["l", "Lucas"],
-["k", "Kiren"],
-["h", "Hugo"],
-["f", "Frenn"],
-["w", "Willim"],
-["m", "Musen"],
-["j", "Johannes"],
-["v", "Virena"],
-["p", "Palli"]
+"Lucas",
+"Kiren",
+"Hugo",
+"Frenn",
+"Willim",
+"Musen",
+"Johannes",
+"Virena",
+"Palli"
 ]

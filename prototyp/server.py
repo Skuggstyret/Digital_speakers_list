@@ -1,10 +1,12 @@
 import os, toml, sys,threading, datetime
 from flask import Flask, jsonify
 from flask_api import status
+from flask_cors import CORS
 import json
 from functools import reduce
 
 app = Flask(__name__)
+CORS(app)
 
 # Global variable
 speaker_lists = [[],[]]
@@ -22,6 +24,7 @@ def getSpeakers():
 @app.route("/speaker/add/<name>", methods=['POST'])
 def addSpeaker(name):
     speakers[name] = [0,0]
+    return '', status.HTTP_201_CREATED
 
 # list
 @app.route("/list/add/<name>", methods=['POST'])

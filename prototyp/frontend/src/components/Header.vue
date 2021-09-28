@@ -2,20 +2,20 @@
   <v-app>
     <v-app-bar app color="white" dark>
       <v-spacer></v-spacer>
-      <router-link to="/">
+      <router-link to="/meeting">
         <v-btn class="primary--text" text>
           <span class="mr-2">Meeting</span>
         </v-btn>
       </router-link>
-      <router-link to="/">
+      <router-link to="/list">
         <v-btn class="primary--text" text>
           <span class="mr-2">Speakers List</span>
         </v-btn>
       </router-link>
 
-      <router-link to="/">
+      <router-link to="/speaker">
         <v-btn class="primary--text" text>
-          <span class="mr-2">Add Speaker</span>
+          <span class="mr-2">Speaker Managent</span>
         </v-btn>
       </router-link>
 

@@ -1,10 +1,11 @@
-import os, toml, sys,threading, datetime
+import toml, sys,threading, datetime
 from flask import Flask, jsonify
 from flask_api import status
 from flask_cors import CORS
 import json
 from functools import reduce
 
+# Init stuff
 app = Flask(__name__)
 CORS(app)
 
@@ -188,13 +189,3 @@ def export(name = ""):
             f.write("{} - {}\n".format(speaker, speakers[speaker][2]))
 
 
-
-
-# Init stuff
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        file_data = toml.load(sys.argv[1])
-        with speaker_lock:
-            for speaker in file_data["speakers"]:
-                speakers[speaker] = [0,0]
-    app.run(debug=True, use_reloader=False)

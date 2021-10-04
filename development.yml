@@ -1,0 +1,11 @@
+version: "3"
+services:
+  backend:
+    build: backend/
+    ports:
+      - "5009:5000"
+    volumes:
+      - ./backend:/source
+    environment:
+      FLASK_ENV: development
+      FLASK_APP: server.py

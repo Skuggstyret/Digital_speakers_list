@@ -1,19 +1,24 @@
-import os, toml, sys,threading, datetime
+import toml, sys,threading, datetime
 from flask import Flask, jsonify
 from flask_api import status
 from flask_cors import CORS
 import json
 from functools import reduce
 
-app = Flask(__name__)
-CORS(app)
-
 # Global variable
 speaker_lists = [[],[]]
 speakers = {}
 speaker_lock = threading.Semaphore()
 
-# TODO: Byt till två talarlistor
+# Init stuff
+app = Flask(__name__)
+CORS(app)
+#  if len(sys.argv) > 1:
+#      file_data = toml.load(sys.argv[1])
+#      with speaker_lock:
+#          for speaker in file_data["speakers"]:
+#              speakers[speaker] = [0,0]
+
 
 # Speaker
 @app.route("/speaker/get",methods=['GET'])
@@ -97,13 +102,3 @@ def export(name = ""):
             f.write("{} - {}\n".format(speaker, speakers[speaker][2]))
 
 
-
-
-# Init stuff
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        file_data = toml.load(sys.argv[1])
-        with speaker_lock:
-            for speaker in file_data["speakers"]:
-                speakers[speaker] = [0,0]
-    app.run(debug=True, use_reloader=False)

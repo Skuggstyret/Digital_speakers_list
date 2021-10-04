@@ -1,9 +1,13 @@
 <template>
-  <v-container grid-list-md text-xs-center>
-    <v-layout row wrap>
-      <v-flex> <List /> </v-flex>
-      <v-flex> <Interface /></v-flex>
-    </v-layout>
+  <v-container>
+    <v-row>
+      <v-col cols="">
+        <List />
+      </v-col>
+      <v-col cols="3">
+        <Interface />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

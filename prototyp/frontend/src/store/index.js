@@ -12,22 +12,21 @@ export default new Vuex.Store({
     lists: [[], []]
   },
   mutations: {
-    setName(state, name) {
+    setName(state, {name, number}) {
       state.name = name;
+      state.number = number;
+
     },
     setList(state, lists) {
       state.lists = lists;
     },
-    setCurrentSpeaker(state, name) {
-      state.current_speaker = name;
-    }
   },
   actions: {
-    addSpeaker({ commit }, name) {
+    addSpeaker({ commit }, speaker) {
       return new Promise((resolve, reject) => {
-        Axios({ url: "/speaker/add/" + name, method: "POST" })
+        Axios({ url: "/speaker/add/" + JSON.stringify(speaker), method: "POST"})
           .then(resp => {
-            commit("setName", name);
+            commit("setName", speaker);
             resolve(resp);
           })
           .catch(err => {
@@ -37,9 +36,9 @@ export default new Vuex.Store({
     },
     updateLists({ commit }) {
       return new Promise((resolve, reject) => {
-        Axios({ url: "/list/get", method: "GET" })
+        Axios({ url: "/list", method: "GET" })
           .then(resp => {
-            commit("setList", resp.data.data);
+            commit("setList", resp.data);
             resolve(resp);
           })
           .catch(err => {
@@ -47,15 +46,13 @@ export default new Vuex.Store({
           });
       });
     },
-    nextSpeaker({ commit }) {
+    nextSpeaker() {
       return new Promise((resolve, reject) => {
         Axios({ url: "/list/next", method: "POST" })
           .then(resp => {
-            commit("setCurrentSpeaker", resp.data);
             resolve(resp);
           })
           .catch(err => {
-            commit("setCurrentSpeaker", "");
             reject(err);
           });
       });

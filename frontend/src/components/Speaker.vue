@@ -4,11 +4,8 @@
       <v-card-title class="text-center">Speaker Managent</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="btnClick()">
-          <div>
-            <v-text-field v-model="name" required placeholder="Name" />
-            <input type="checkbox" id="checkbox" v-model="checked" /> Create new
-            speaker
-          </div>
+            <v-text-field v-model="name" label="Name" required placeholder="Name" />
+            <v-text-field v-model="number" :rules="numberRules" label="Number" required placeholder="0" />
           <v-btn class="primary" type="submit"> Submit </v-btn>
         </v-form>
       </v-card-text>
@@ -20,24 +17,26 @@
 export default {
   name: "SpeakerMangement",
   data() {
-    return { name: "", checked: false };
+    return { 
+      name: "", 
+      number: "",
+      checked: false,
+      numberRules: [v => { if(!v.trim()) return true; if(!isNaN(parseInt(v)) && v >= 0) return true; return "Has to be a positive number"; }],
+    };
   },
   components: {},
   methods: {
     btnClick() {
       this.btn_loader = true;
-      if (this.checked) {
-        this.$store
-          .dispatch("addSpeaker", this.name)
-          .then(() => {
-            this.btn_loader = false;
-          })
-          .catch(() => {
-            this.btn_loader = false;
-          });
-      } else {
-        this.$store.state.name = this.name;
-      }
+      this.$store
+        .dispatch("addSpeaker", { name: this.name, number: this.number })
+        .then(() => {
+          this.btn_loader = false;
+          this.$router.push("Meeting");
+        })
+        .catch(() => {
+          this.btn_loader = false;
+        });
     }
   }
 };

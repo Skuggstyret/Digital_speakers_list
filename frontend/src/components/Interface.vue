@@ -1,15 +1,26 @@
 <template>
   <v-container>
-    <v-card class="mx-auto" width="150">
-      <div>
-        <v-btn v-on:click="raiseHand()"> Raise hand </v-btn>
-      </div>
-      <div>
-        <v-btn v-on:click="nextSpeaker()"> Next </v-btn>
-      </div>
-      <div>
-        <v-btn v-on:click="resetList()"> Reset list </v-btn>
-      </div>
+    <v-card>
+      <v-list>
+        <v-list-item>
+          <v-btn v-on:click="raiseHand()"> Raise hand </v-btn>
+        </v-list-item>
+        <v-list-item>
+          <v-btn v-on:click="lowerHand()"> Lower hand </v-btn>
+        </v-list-item>
+        <v-list-item v-if="admin">
+          <v-btn v-on:click="nextSpeaker()"> Next </v-btn>
+        </v-list-item>
+        <v-list-item v-if="admin">
+          <v-btn v-on:click="resetList()"> Reset list </v-btn>
+        </v-list-item>
+        <v-list-item v-if="admin">
+          <v-btn v-on:click="addNestedList()"> Add nested list </v-btn>
+        </v-list-item>
+        <v-list-item v-if="admin">
+          <v-btn v-on:click="removeNestedList()"> Remove nested list </v-btn>
+        </v-list-item>
+      </v-list>
     </v-card>
   </v-container>
 </template>
@@ -18,6 +29,7 @@
 import Axios from "@/plugins/axios";
 export default {
   name: "Interface",
+  props: ['admin'],
   data() {
     return { name: "", checked: false };
   },
@@ -29,12 +41,30 @@ export default {
         alert("You need to pick a speaker before raising hand");
       } else {
         return new Promise((resolve, reject) => {
-          Axios({ url: "/list/add/" + this.$store.state.name, method: "POST" })
+          Axios({ url: "/list/add/" + this.$store.state.number , method: "POST" })
             .then(resp => {
               resolve(resp);
             })
             .catch(err => {
-              alert("Something went wrong" + err);
+              alert("Something went wrong. You probably already raised your hand. \n\n" + err);
+              // Give feedback
+              reject(err);
+            });
+        });
+      }
+    },
+    lowerHand() {
+      if (this.$store.state.name == "") {
+        // Need to select a speaker first
+        alert("You need to pick a speaker before raising hand");
+      } else {
+        return new Promise((resolve, reject) => {
+          Axios({ url: "/list/remove/" + this.$store.state.number , method: "POST" })
+            .then(resp => {
+              resolve(resp);
+            })
+            .catch(err => {
+              alert("Something went wrong. You probably already have your hand lowered. \n\n" + err);
               // Give feedback
               reject(err);
             });
@@ -42,19 +72,46 @@ export default {
       }
     },
     nextSpeaker() {
-      this.btn_loader = true;
-      this.$store
-        .dispatch("nextSpeaker")
-        .then(() => {
-          this.btn_loader = false;
-        })
-        .catch(() => {
-          this.btn_loader = false;
-        });
+      return new Promise((resolve, reject) => {
+        Axios({ url: "/list/next", method: "POST" })
+          .then(resp => {
+            resolve(resp)
+          })
+          .catch(err => {
+            alert("Something went wrong. \n\n" + err);
+            reject(err)
+          });
+      });
     },
     resetList() {
       return new Promise((resolve, reject) => {
         Axios({ url: "/list/reset", method: "POST" })
+          .then(resp => {
+            resolve(resp);
+          })
+          .catch(err => {
+            alert("Something went wrong" + err);
+            // Give feedback
+            reject(err);
+          });
+      });
+    },
+    addNestedList() {
+      return new Promise((resolve, reject) => {
+        Axios({ url: "/list/push", method: "POST" })
+          .then(resp => {
+            resolve(resp);
+          })
+          .catch(err => {
+            alert("Something went wrong" + err);
+            // Give feedback
+            reject(err);
+          });
+      });
+    },
+    removeNestedList() {
+      return new Promise((resolve, reject) => {
+        Axios({ url: "/list/pop", method: "POST" })
           .then(resp => {
             resolve(resp);
           })

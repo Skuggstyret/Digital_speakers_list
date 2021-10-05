@@ -4,6 +4,7 @@ import Home from "@/views/Home.vue";
 import Speaker from "@/components/Speaker.vue";
 import List from "@/components/List.vue";
 import Meeting from "@/views/Meeting.vue";
+import Admin from "@/views/admin.vue";
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes = [
     path: "/meeting",
     name: "Meeting",
     component: Meeting
+  },
+  {
+    path:"/admin",
+    name: "Admin",
+    component: Admin
   }
 ];
 

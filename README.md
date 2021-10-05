@@ -1,51 +1,63 @@
-## Mål
+## Goal
 
-Underlätta möten genom att ta bort den fysika talare listan och där ingen låta medlemar skriva upp sig själva samt se talarlistan.
+Simplify meeting by providing a digital speakers list. In with member can sign up and raise and lower their hands. Additionally simplify meetings by automatically handling the speaking list included next speaker, cleaning the list, and nested lists.
+
+## License
+
+MIT, see LICENSE.md
 
 ## Installation
 
-Ladda ner repo genom att tycka upp _code_ och _Download ZIP_, eller genom att
+Download the repo by pressing _code_ and _Download ZIP_, or by
 
 ```
 git clone https://github.com/Skuggstyret/Digital\_talarlista
 ```
 
-## Användning
+## Usage
 
-System genom
+Start production server by
 
 ```
 docker-compose -f deployment.yml up
 ```
 
-Det kräver docker och docker-compose.
+Requires docker and docker-compose.
 
-Det går att lägga på `-d` flagan för att kör i backgrounden. För att stänga ner så kan man använda
+The `-d` flag to run the system in the background, to terminate the system use
 
 ```
 docker-compose -f deployment.yml down
 ```
 
-## Utveckla
+Probably windows on windows docker too but don't ask my how windows docker works, because I have no idea.
 
-Samma som ovan, men för `development.yml`. Detta start backend i development läge vilket ger mer feedback. För att start frontendi development läge, öppna `frontend` och kör.
+## Contribute
+
+Same as above but change the yml file to `development.yml`, this will start the backend in development providing more feedback. To run the frontend for development enter the `frontend` and run.
 
 ```
 yarn install
 ```
 
-för att install dependancy samt
+to install dependencies
 
 ```
 yarn serve
 ```
 
-för att start den.
+to start the frontend.
 
-Det kräver att yarn är installerat.
+Both the frontend and backend in development mode will hot load changes, with the exception of change to the backend config file.
 
-## Förbättring potinial
+Requires yarn.
 
-- Skriva om i bättre språk, _host_ Rust _host_ va.
-- Göra web interface mer användarevänligt, samt förmåga att låsa ner men någon typ av lösenord eller använare. <- Extra vilket för kritiska funktion typ dra nästa talare och återställa talarlistan.
-- Fixa CI, så att man kan ladda ner image från giten.
+If you want to contribute a change then please a pull request to main and we'll look at it at out earliest convinces.
+
+## Possible improvements
+
+- Rewrite in better language, _cough_ Rust _cough_.
+- Improved usability.
+- Add support for locking down certain or all feature to prevent tampering.
+- Setup CI, to provide docker images through ghcr.
+- Provide support for an arbitrary number meetings and create/destroy meeting
